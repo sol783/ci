@@ -1,24 +1,10 @@
 <?php
 echo '<pre>';
 ob_start();
-//print_r( $res );
-//print_r( array_slice($res, 0, 2) );
+print_r( $res );
 echo htmlspecialchars( ob_get_clean() );
 echo '</pre>';
-//exit;
-
-
-// $page = isset($_GET['page']) ? $_GET['page'] : 1;
-// $results_per_page = isset($get['pageCnt']) ? $get['pageCnt'] : 30;  
-// $page_first_result = (($page-1) * $results_per_page);
-// $last_page = ceil((count($res)) / $results_per_page);
-// $page_last_result = $page_first_result + $results_per_page;
-// if ($page === strval($last_page)) {
-//     $page_last_result = count($res);
-// }
-
-// $res = array_slice($res, $page_first_result, $page_last_result);
-
+exit;
 
 ?>
  
@@ -40,14 +26,9 @@ echo '</pre>';
             <input class="form-control me-2" type="search" name="search" placeholder="키워드를 입력하세요" aria-label="Search" value="<?=$get['search']?>">
             <select class="form-select me-2" name="type" id="type">
                 <option value="">전체</option>
-                <?php foreach ($siteMap as $site) { ?>
+                <?php foreach ($res['siteMap'] as $site) { ?>
                 <option value="<?=$site?>" <?php if($get['type'] == $site){echo 'selected';}?>><?=$site?></option>
                 <?php } ?>
-            </select>
-            <select class="form-select me-2" name="pageCnt" id="pageCnt">
-                <option value="">전체</option>
-                <option value="50" <?php if($get['pageCnt'] == '50'){echo 'selected';}?>>50개까지</option>
-                <option value="100" <?php if($get['pageCnt'] == '100'){echo 'selected';}?>>100개까지</option>
             </select>
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
@@ -61,7 +42,7 @@ echo '</pre>';
             <thead>
                 <tr>
                     <th scope="col">번호</th>
-                    <th scope="col">사이트</th>
+                    <!-- <th scope="col">사이트</th> -->
                     <th scope="col">기업명</th>
                     <th scope="col">채용내용</th>
                     <th scope="col">접수기간</th>
@@ -70,34 +51,24 @@ echo '</pre>';
             <tbody>
                 <?php 
                     $num = 1;
-                    for ($i=0; $i<count($res); $i++) { 
+                    for ($i=0; $i<count($res['name']); $i++) { 
+                        for ($j=0; $j<count($res['name'][$i]); $j++) { 
                 ?>
                 <tr>
                     <td><?=$num++?></td>
-                    <td><?=$res[$i]['site']?></td>
-                    <td><?=$res[$i]['name']?></td>
-                    <td><a href="<?=$res[$i]['contents']['link']?>" target="_blank"><?=$res[$i]['contents']['title']?></a></td>
-                    <td><?=$res[$i]['date']?></td>
+                    <!-- <td><?=$res['site'][$i]?></td> -->
+                    <td><?=$res['name'][$i][$j]?></td>
+                    <td><a href="<?=$res['contents'][$i]['link'][$j]?>" target="_blank"><?=$res['contents'][$i]['title'][$j]?></a></td>
+                    <td><?=$res['date'][$i][$j]?></td>
                 </tr>
                 <?php 
+                        }
                     }
                 ?>
                 
             </tbody>
         </table>
         <?php } ?>
-
-        <div class="d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <!-- <li class="page-item"><a class="page-link" href="#">Previous</a></li> -->
-                    <?php for($page = 1; $page<= $lastPage; $page++) :?>
-                    <li class="page-item"><a class="page-link" href="<?=$_SERVER['PHP_SELF'].'?search='.$get['search'].'&type='.$get['type'].'&pageCnt='.$get['pageCnt'].'&page='.$page?>"><?=$page?></a></li>
-                    <?php endfor ?>
-                    <!-- <li class="page-item"><a class="page-link" href="#">Next</a></li> -->
-                </ul>
-            </nav>
-        </div>
     </div>
 </body>
 </html>
